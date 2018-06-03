@@ -86,6 +86,12 @@ void *_u_list_node_value(u_list_node_t *node);
 
 // HASH TABLE
 
+// TODO: placeholder
+typedef struct u_hash_table_t u_hash_table_t;
+struct u_hash_table_t {
+  int x;
+};
+
 #define u_hash_table_new(type) _u_hash_table_new(sizeof(type))
 u_hash_table_t *_u_hash_table_new(size_t object_size);
 void u_hash_table_free(u_hash_table_t *table);
