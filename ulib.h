@@ -11,7 +11,7 @@ typedef struct u_array_t u_array_t;
 struct u_array_t {
   char *buffer; // use char * instead of void * for assignment
   int capacity;
-  int length;
+  int count;
   size_t object_size;
 };
 
@@ -26,7 +26,7 @@ void *_u_array_push(u_array_t *arr);
 void u_array_pop(u_array_t *arr);
 void u_array_remove(u_array_t *arr, int i);
 void u_array_fast_remove(u_array_t *arr, int i);
-int u_array_length(u_array_t *arr);
+int u_array_count(u_array_t *arr);
 void u_array_clear(u_array_t *arr);
 
 // QUEUE
@@ -41,7 +41,7 @@ struct u_queue_t {
 #define u_queue_new(type) _u_queue_new(sizeof(type))
 u_queue_t *_u_queue_new(size_t object_size);
 void u_queue_free(u_queue_t *queue);
-int u_queue_length(u_queue_t *queue);
+int u_queue_count(u_queue_t *queue);
 #define u_queue_add(type, queue, val) (* ((type *) _u_array_push(queue->inbox))) = val;
 void *_u_queue_peek(u_queue_t *queue);
 #define u_queue_peek_v(type, arr) (* ((type *) _u_queue_peek(queue)))
@@ -62,7 +62,7 @@ struct u_list_t {
   int object_size;
   u_list_node_t *head;
   u_list_node_t *tail;
-  int length;
+  int count;
 };
 
 #define u_list_new(type) _u_list_new(sizeof(type))
@@ -73,7 +73,7 @@ void* _u_list_prepend(u_list_t *list);
 #define u_list_append(type, list, val) (* ((type *) _u_list_append(list))) = val
 void* _u_list_append(u_list_t *list);
 void u_list_remove(u_list_t *list, u_list_node_t *node);
-int u_list_length(u_list_t *list);
+int u_list_count(u_list_t *list);
 u_list_node_t *u_list_head(u_list_t *list);
 u_list_node_t *u_list_tail(u_list_t *list);
 
@@ -90,7 +90,10 @@ void *_u_list_node_value(u_list_node_t *node);
 // TODO: placeholder
 typedef struct u_hash_table_t u_hash_table_t;
 struct u_hash_table_t {
-  int x;
+  int bucket_count;
+  u_list_t **buckets;
+
+  int count;
 };
 
 #define u_hash_table_new(type) _u_hash_table_new(sizeof(type))

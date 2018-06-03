@@ -20,7 +20,7 @@ void array_basic_test() {
   }
 
   assert(u_array_get_v(int, arr, 101) == 99);
-  assert(u_array_length(arr) == 102);
+  assert(u_array_count(arr) == 102);
 
   u_array_free(arr);
 }
@@ -90,13 +90,13 @@ void array_remove_test() {
 
   assert(u_array_get_v(int, arr, 0) == 2);
   assert(u_array_get_v(int, arr, 3) == 5);
-  assert(u_array_length(arr) == 4);
+  assert(u_array_count(arr) == 4);
 
   u_array_fast_remove(arr, 0);
 
   assert(u_array_get_v(int, arr, 0) == 5);
   assert(u_array_get_v(int, arr, 2) == 4);
-  assert(u_array_length(arr) == 3);
+  assert(u_array_count(arr) == 3);
 }
 
 void array_get_p_test() {
@@ -125,7 +125,7 @@ void queue_basic_test() {
   u_queue_add(int, queue, 2);
   u_queue_add(int, queue, 3);
 
-  assert(u_queue_length(queue) == 3);
+  assert(u_queue_count(queue) == 3);
 
   assert(u_queue_peek_v(int, queue) == 1);
   u_queue_remove(queue);
@@ -133,7 +133,7 @@ void queue_basic_test() {
 
   u_queue_add(int, queue, 4);
 
-  assert(u_queue_length(queue) == 3);
+  assert(u_queue_count(queue) == 3);
 
   u_queue_remove(queue);
   assert(u_queue_peek_v(int, queue) == 3);
@@ -153,7 +153,7 @@ void list_basic_test() {
     u_list_append(int, list, i);
   }
 
-  assert(u_list_length(list) == 101);
+  assert(u_list_count(list) == 101);
   assert(u_list_node_value_v(int, u_list_tail(list)) == 99);
   assert(u_list_node_value_v(int, u_list_head(list)) == -1);
 

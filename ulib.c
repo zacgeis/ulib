@@ -5,11 +5,11 @@
 
 // UTILS
 
-static inline void u_memcpy(void *dest, void *src, int length) {
+static inline void u_memcpy(void *dest, void *src, int count) {
   char *cdest = (char *) dest;
   char *csrc = (char *) src;
 
-  for (int i = 0; i < length; i++) {
+  for (int i = 0; i < count; i++) {
     *(cdest + i) = *(csrc + i);
   }
 }
@@ -22,7 +22,7 @@ u_array_t *_u_array_new(size_t object_size) {
   arr->object_size = object_size;
   arr->capacity = MIN_ARRAY_CAPACITY;
   arr->buffer = malloc(arr->object_size * arr->capacity);
-  arr->length = 0;
+  arr->count = 0;
 
   return arr;
 }
@@ -36,43 +36,43 @@ void *_u_array_get(u_array_t *arr, int i) {
   return arr->buffer + (arr->object_size * i);
 }
 
-int u_array_length(u_array_t *arr) {
-  return arr->length;
+int u_array_count(u_array_t *arr) {
+  return arr->count;
 }
 
 void *_u_array_push(u_array_t *arr) {
-  arr->length += 1;
-  if (arr->length > arr->capacity) {
+  arr->count += 1;
+  if (arr->count > arr->capacity) {
     arr->capacity *= 2;
     arr->buffer = realloc(arr->buffer, arr->object_size * arr->capacity);
   }
-  return _u_array_get(arr, arr->length - 1);
+  return _u_array_get(arr, arr->count - 1);
 }
 
 void u_array_pop(u_array_t *arr) {
-  arr->length -= 1;
-  if (arr->capacity > MIN_ARRAY_CAPACITY && arr->length < (arr->capacity / 2)) {
+  arr->count -= 1;
+  if (arr->capacity > MIN_ARRAY_CAPACITY && arr->count < (arr->capacity / 2)) {
     arr->capacity /= 2;
     arr->buffer = realloc(arr->buffer, arr->object_size * arr->capacity);
   }
 }
 
 void u_array_remove(u_array_t *arr, int i) {
-  if (i < arr->length - 1) {
-    u_memcpy(_u_array_get(arr, i), _u_array_get(arr, i + 1), arr->object_size * (arr->length - 1 - i));
+  if (i < arr->count - 1) {
+    u_memcpy(_u_array_get(arr, i), _u_array_get(arr, i + 1), arr->object_size * (arr->count - 1 - i));
   }
   u_array_pop(arr);
 }
 
 void u_array_fast_remove(u_array_t *arr, int i) {
-  if (i < arr->length - 1) {
-    u_memcpy(_u_array_get(arr, i), _u_array_get(arr, arr->length - 1), arr->object_size);
+  if (i < arr->count - 1) {
+    u_memcpy(_u_array_get(arr, i), _u_array_get(arr, arr->count - 1), arr->object_size);
   }
   u_array_pop(arr);
 }
 
 void u_array_clear(u_array_t *arr) {
-  arr->length = 0;
+  arr->count = 0;
   arr->capacity = MIN_ARRAY_CAPACITY;
   arr->buffer = realloc(arr->buffer, arr->object_size * arr->capacity);
 }
@@ -96,15 +96,15 @@ void u_queue_free(u_queue_t *queue) {
   free(queue);
 }
 
-int u_queue_length(u_queue_t *queue) {
-  return u_array_length(queue->inbox) + u_array_length(queue->outbox);
+int u_queue_count(u_queue_t *queue) {
+  return u_array_count(queue->inbox) + u_array_count(queue->outbox);
 }
 
 static void _u_queue_shift_inbox(u_queue_t *queue) {
-    int inbox_length = u_array_length(queue->inbox);
+    int inbox_count = u_array_count(queue->inbox);
     int outbox_i = 0;
-    for (int inbox_i = inbox_length - 1; inbox_i >= 0; inbox_i--) {
-      // Needed for capacity and length setting
+    for (int inbox_i = inbox_count - 1; inbox_i >= 0; inbox_i--) {
+      // Needed for capacity and count setting
       // The value is then set by memcpy
       _u_array_push(queue->outbox);
       void *dest = _u_array_get(queue->outbox, outbox_i);
@@ -116,14 +116,14 @@ static void _u_queue_shift_inbox(u_queue_t *queue) {
 }
 
 void *_u_queue_peek(u_queue_t *queue) {
-  if (u_array_length(queue->outbox) == 0) {
+  if (u_array_count(queue->outbox) == 0) {
     _u_queue_shift_inbox(queue);
   }
-  return _u_array_get(queue->outbox, u_array_length(queue->outbox) - 1);
+  return _u_array_get(queue->outbox, u_array_count(queue->outbox) - 1);
 }
 
 void u_queue_remove(u_queue_t *queue) {
-  if (u_array_length(queue->outbox) == 0) {
+  if (u_array_count(queue->outbox) == 0) {
     _u_queue_shift_inbox(queue);
   } else {
     u_array_pop(queue->outbox);
@@ -136,7 +136,7 @@ u_list_t *_u_list_new(size_t object_size) {
   u_list_t *list = malloc(sizeof(u_list_t));
 
   list->object_size = object_size;
-  list->length = 0;
+  list->count = 0;
   list->head = NULL;
   list->tail = NULL;
 
@@ -165,7 +165,7 @@ void* _u_list_prepend(u_list_t *list) {
     list->head = new_node;
   }
 
-  list->length++;
+  list->count++;
 
   return new_node->val;
 }
@@ -182,7 +182,7 @@ void* _u_list_append(u_list_t *list) {
     list->tail = new_node;
   }
 
-  list->length++;
+  list->count++;
 
   return new_node->val;
 }
@@ -204,11 +204,11 @@ void u_list_remove(u_list_t *list, u_list_node_t *node) {
 
   u_list_node_free(node);
 
-  list->length--;
+  list->count--;
 }
 
-int u_list_length(u_list_t *list) {
-  return list->length;
+int u_list_count(u_list_t *list) {
+  return list->count;
 }
 
 u_list_node_t *u_list_head(u_list_t *list) {
