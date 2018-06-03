@@ -12,14 +12,14 @@ void array_basic_test() {
   u_array_push(int, arr, 1);
   u_array_push(int, arr, 2);
 
-  assert(u_array_getv(int, arr, 0) == 1);
-  assert(u_array_getv(int, arr, 1) == 2);
+  assert(u_array_get_v(int, arr, 0) == 1);
+  assert(u_array_get_v(int, arr, 1) == 2);
 
   for (int i = 0; i < 100; i++) {
     u_array_push(int, arr, i);
   }
 
-  assert(u_array_getv(int, arr, 101) == 99);
+  assert(u_array_get_v(int, arr, 101) == 99);
   assert(u_array_length(arr) == 102);
 
   u_array_free(arr);
@@ -34,8 +34,8 @@ void array_pointer_test() {
   u_array_push(char *, arr, s1);
   u_array_push(char *, arr, s2);
 
-  assert(strcmp(u_array_getv(char *, arr, 0), "value 1") == 0);
-  assert(strcmp(u_array_getv(char *, arr, 1), "value 2") == 0);
+  assert(strcmp(u_array_get_v(char *, arr, 0), "value 1") == 0);
+  assert(strcmp(u_array_get_v(char *, arr, 1), "value 2") == 0);
 
   u_array_free(arr);
 }
@@ -60,18 +60,18 @@ void array_struct_test() {
   u_array_push(struct_test_t, arr, s1);
   u_array_push(struct_test_t, arr, s2);
 
-  assert(u_array_getv(struct_test_t, arr, 0).x == 1);
-  assert(u_array_getv(struct_test_t, arr, 0).y == 2);
-  assert(u_array_getv(struct_test_t, arr, 1).x == 3);
-  assert(u_array_getv(struct_test_t, arr, 1).y == 4);
+  assert(u_array_get_v(struct_test_t, arr, 0).x == 1);
+  assert(u_array_get_v(struct_test_t, arr, 0).y == 2);
+  assert(u_array_get_v(struct_test_t, arr, 1).x == 3);
+  assert(u_array_get_v(struct_test_t, arr, 1).y == 4);
 
   array_struct_test_stack(arr);
 
-  assert(u_array_getv(struct_test_t, arr, 2).x == 5);
-  assert(u_array_getv(struct_test_t, arr, 2).y == 6);
+  assert(u_array_get_v(struct_test_t, arr, 2).x == 5);
+  assert(u_array_get_v(struct_test_t, arr, 2).y == 6);
 
   // Ensure that copying happens
-  struct_test_t remove_test = u_array_getv(struct_test_t, arr, 0);
+  struct_test_t remove_test = u_array_get_v(struct_test_t, arr, 0);
   u_array_remove(arr, 0);
   assert(remove_test.x == 1);
 
@@ -88,31 +88,31 @@ void array_remove_test() {
 
   u_array_remove(arr, 0);
 
-  assert(u_array_getv(int, arr, 0) == 2);
-  assert(u_array_getv(int, arr, 3) == 5);
+  assert(u_array_get_v(int, arr, 0) == 2);
+  assert(u_array_get_v(int, arr, 3) == 5);
   assert(u_array_length(arr) == 4);
 
   u_array_fast_remove(arr, 0);
 
-  assert(u_array_getv(int, arr, 0) == 5);
-  assert(u_array_getv(int, arr, 2) == 4);
+  assert(u_array_get_v(int, arr, 0) == 5);
+  assert(u_array_get_v(int, arr, 2) == 4);
   assert(u_array_length(arr) == 3);
 }
 
-void array_getp_test() {
+void array_get_p_test() {
   struct_test_t test = { .x = 1, .y = 2 };
 
   u_array_t *arr = u_array_new(struct_test_t);
 
   u_array_push(struct_test_t, arr, test);
 
-  struct_test_t *ptest = u_array_getp(struct_test_t, arr, 0);
+  struct_test_t *ptest = u_array_get_p(struct_test_t, arr, 0);
 
   assert(ptest->x == 1);
   ptest->x = 3;
   assert(ptest->x == 3);
 
-  struct_test_t *ptest2 = u_array_getp(struct_test_t, arr, 0);
+  struct_test_t *ptest2 = u_array_get_p(struct_test_t, arr, 0);
   assert(ptest2->x == 3);
 }
 
@@ -127,19 +127,19 @@ void queue_basic_test() {
 
   assert(u_queue_length(queue) == 3);
 
-  assert(u_queue_peekv(int, queue) == 1);
+  assert(u_queue_peek_v(int, queue) == 1);
   u_queue_remove(queue);
-  assert(u_queue_peekv(int, queue) == 2);
+  assert(u_queue_peek_v(int, queue) == 2);
 
   u_queue_add(int, queue, 4);
 
   assert(u_queue_length(queue) == 3);
 
   u_queue_remove(queue);
-  assert(u_queue_peekv(int, queue) == 3);
+  assert(u_queue_peek_v(int, queue) == 3);
 
   u_queue_remove(queue);
-  assert(u_queue_peekv(int, queue) == 4);
+  assert(u_queue_peek_v(int, queue) == 4);
 }
 
 #define run_test(name)\
@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
   run_test(array_pointer_test);
   run_test(array_struct_test);
   run_test(array_remove_test);
-  run_test(array_getp_test);
+  run_test(array_get_p_test);
 
   run_test(queue_basic_test);
 
