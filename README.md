@@ -2,7 +2,7 @@
 
 ## Goals
 
-Provide basic container data structures in C.
+Provide basic container data structures in C. Only intended for small personal projects.
 
 ## Supported data structures
 
