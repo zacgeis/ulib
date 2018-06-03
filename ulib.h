@@ -54,11 +54,12 @@ typedef struct u_list_node_t u_list_node_t;
 struct u_list_node_t {
   u_list_node_t *prev;
   u_list_node_t *next;
-  void *val;
+  char *val;
 };
 
 typedef struct u_list_t u_list_t;
 struct u_list_t {
+  int object_size;
   u_list_node_t *head;
   u_list_node_t *tail;
   int length;
@@ -77,7 +78,7 @@ u_list_node_t *u_list_head(u_list_t *list);
 u_list_node_t *u_list_tail(u_list_t *list);
 
 u_list_node_t *u_list_node_new(size_t object_size);
-void u_list_node_free(u_list_node_t *list_node);
+void u_list_node_free(u_list_node_t *node);
 u_list_node_t *u_list_node_next(u_list_node_t *cur);
 u_list_node_t *u_list_node_prev(u_list_node_t *cur);
 #define u_list_node_value_v(type, node) (* ((type *) _u_list_node_value(node)))

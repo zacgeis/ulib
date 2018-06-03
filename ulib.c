@@ -132,4 +132,117 @@ void u_queue_remove(u_queue_t *queue) {
 
 // LIST
 
+u_list_t *_u_list_new(size_t object_size) {
+  u_list_t *list = malloc(sizeof(u_list_t));
 
+  list->object_size = object_size;
+  list->length = 0;
+  list->head = NULL;
+  list->tail = NULL;
+
+  return list;
+}
+
+void u_list_free(u_list_t *list) {
+  u_list_node_t *current = list->head;
+  while (current != NULL) {
+    u_list_node_t *previous = current;
+    current = current->next;
+    u_list_node_free(previous);
+  }
+  free(list);
+}
+
+void* _u_list_prepend(u_list_t *list) {
+  u_list_node_t *new_node = u_list_node_new(list->object_size);
+
+  if (list->head == NULL && list->tail == NULL) {
+    list->head = new_node;
+    list->tail = new_node;
+  } else {
+    list->head->prev = new_node;
+    new_node->next = list->head;
+    list->head = new_node;
+  }
+
+  list->length++;
+
+  return new_node->val;
+}
+
+void* _u_list_append(u_list_t *list) {
+  u_list_node_t *new_node = u_list_node_new(list->object_size);
+
+  if (list->head == NULL && list->tail == NULL) {
+    list->head = new_node;
+    list->tail = new_node;
+  } else {
+    list->tail->next = new_node;
+    new_node->prev = list->tail;
+    list->tail = new_node;
+  }
+
+  list->length++;
+
+  return new_node->val;
+}
+
+void u_list_remove(u_list_t *list, u_list_node_t *node) {
+  if (list->head == node && list->tail == node) {
+    list->head = NULL;
+    list->tail = NULL;
+  } else if (list->head == node) {
+    list->head = list->head->next;
+    list->head->prev = NULL;
+  } else if (list->tail == node) {
+    list->tail = list->tail->prev;
+    list->tail->next = NULL;
+  } else {
+    node->next->prev = node->prev;
+    node->prev->next = node->next;
+  }
+
+  u_list_node_free(node);
+
+  list->length--;
+}
+
+int u_list_length(u_list_t *list) {
+  return list->length;
+}
+
+u_list_node_t *u_list_head(u_list_t *list) {
+  return list->head;
+}
+
+u_list_node_t *u_list_tail(u_list_t *list) {
+  return list->tail;
+}
+
+
+u_list_node_t *u_list_node_new(size_t object_size) {
+  u_list_node_t *node = malloc(sizeof(u_list_node_t));
+
+  node->val = malloc(sizeof(object_size));
+  node->prev = NULL;
+  node->next = NULL;
+
+  return node;
+}
+
+void u_list_node_free(u_list_node_t *node) {
+  free(node->val);
+  free(node);
+}
+
+u_list_node_t *u_list_node_next(u_list_node_t *cur) {
+  return cur->next;
+}
+
+u_list_node_t *u_list_node_prev(u_list_node_t *cur) {
+  return cur->prev;
+}
+
+void *_u_list_node_value(u_list_node_t *node) {
+  return node->val;
+}

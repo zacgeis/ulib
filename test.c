@@ -142,6 +142,25 @@ void queue_basic_test() {
   assert(u_queue_peek_v(int, queue) == 4);
 }
 
+// LIST
+
+void list_basic_test() {
+  u_list_t *list = u_list_new(int);
+
+  u_list_append(int, list, -1);
+
+  for (int i = 0; i < 100; i++) {
+    u_list_append(int, list, i);
+  }
+
+  assert(u_list_length(list) == 101);
+  assert(u_list_node_value_v(int, u_list_tail(list)) == 99);
+  assert(u_list_node_value_v(int, u_list_head(list)) == -1);
+
+  u_list_prepend(int, list, -2);
+  assert(u_list_node_value_v(int, u_list_head(list)) == -2);
+}
+
 #define run_test(name)\
   printf("  %s\n", #name);\
   name();
@@ -156,6 +175,8 @@ int main(int argc, char **argv) {
   run_test(array_get_p_test);
 
   run_test(queue_basic_test);
+
+  run_test(list_basic_test);
 
   printf("All tests passed...\n");
 
