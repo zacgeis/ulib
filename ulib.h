@@ -88,6 +88,7 @@ void *_u_list_node_value(u_list_node_t *node);
 // HASH TABLE
 
 // TODO: placeholder
+// TODO: add rehashing and growing the bucket count
 typedef struct u_hash_table_t u_hash_table_t;
 struct u_hash_table_t {
   int bucket_count;

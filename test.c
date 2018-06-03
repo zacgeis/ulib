@@ -159,6 +159,7 @@ void list_basic_test() {
 
   u_list_prepend(int, list, -2);
   assert(u_list_node_value_v(int, u_list_head(list)) == -2);
+  assert(*u_list_node_value_p(int, u_list_head(list)) == -2);
 }
 
 #define run_test(name)\
