@@ -263,6 +263,8 @@ u_hash_table_t *_u_hash_table_new(size_t object_size) {
   return table;
 }
 
+// TODO: not complete - also needs to free the entry
+// needs to free: entry value buffer, entry itself, list containiner enteries, array containing lists.
 void _u_hash_table_free_bucket(u_list_t *bucket) {
   u_list_node_t *current = bucket->head;
   while (current != NULL) {
