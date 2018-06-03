@@ -91,10 +91,16 @@ void *_u_list_node_value(u_list_node_t *node);
 // TODO: add rehashing and growing the bucket count
 typedef struct u_hash_table_t u_hash_table_t;
 struct u_hash_table_t {
-  int bucket_count;
+  int _bucket_count;
   u_list_t **buckets;
-
   int count;
+  int object_size;
+};
+
+typedef struct u_hash_table_entry_t u_hash_table_entry_t;
+struct u_hash_table_entry_t {
+  char *key;
+  void *val;
 };
 
 #define u_hash_table_new(type) _u_hash_table_new(sizeof(type))
@@ -105,5 +111,7 @@ void *_u_hash_table_put(u_hash_table_t *table, char *key);
 #define u_hash_table_get_v(type, table, key) (* ((type *) _u_hash_table_get(table, key)))
 #define u_hash_table_get_p(type, table, key) ((type *) _u_hash_table_get(table, key))
 void *_u_hash_table_get(u_hash_table_t *table, char *key);
+void u_hash_table_remove(u_hash_table_t *table, char *key);
+int u_hash_table_count(u_hash_table_t *table);
 
 #endif

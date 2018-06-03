@@ -97,6 +97,8 @@ void array_remove_test() {
   assert(u_array_get_v(int, arr, 0) == 5);
   assert(u_array_get_v(int, arr, 2) == 4);
   assert(u_array_count(arr) == 3);
+
+  u_array_free(arr);
 }
 
 void array_get_p_test() {
@@ -114,6 +116,8 @@ void array_get_p_test() {
 
   struct_test_t *ptest2 = u_array_get_p(struct_test_t, arr, 0);
   assert(ptest2->x == 3);
+
+  u_array_free(arr);
 }
 
 // QUEUE
@@ -140,6 +144,8 @@ void queue_basic_test() {
 
   u_queue_remove(queue);
   assert(u_queue_peek_v(int, queue) == 4);
+
+  u_queue_free(queue);
 }
 
 // LIST
@@ -160,6 +166,18 @@ void list_basic_test() {
   u_list_prepend(int, list, -2);
   assert(u_list_node_value_v(int, u_list_head(list)) == -2);
   assert(*u_list_node_value_p(int, u_list_head(list)) == -2);
+
+  u_list_free(list);
+}
+
+// HASH TABLE
+
+void hash_table_basic_test() {
+  u_hash_table_t *table = u_hash_table_new(int);
+
+  assert(u_hash_table_count(table) == 0);
+
+  u_hash_table_free(table);
 }
 
 #define run_test(name)\

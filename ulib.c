@@ -246,3 +246,53 @@ u_list_node_t *u_list_node_prev(u_list_node_t *cur) {
 void *_u_list_node_value(u_list_node_t *node) {
   return node->val;
 }
+
+// HASH TABLE
+
+u_hash_table_t *_u_hash_table_new(size_t object_size) {
+  u_hash_table_t *table = malloc(sizeof(u_hash_table_t));
+
+  table->_bucket_count = 4;
+  table->buckets = malloc(sizeof(u_list_t *) * table->_bucket_count);
+  for (int i = 0; i < table->_bucket_count; i++) {
+    *(table->buckets + i) = u_list_new(u_hash_table_entry_t *);
+  }
+  table->count = 0;
+  table->object_size = object_size;
+
+  return table;
+}
+
+void _u_hash_table_free_bucket(u_list_t *bucket) {
+  u_list_node_t *current = bucket->head;
+  while (current != NULL) {
+    u_list_node_t *previous = current;
+    current = current->next;
+    free(u_list_node_value_v(u_hash_table_entry_t *, previous));
+  }
+  u_list_free(bucket);
+}
+
+void u_hash_table_free(u_hash_table_t *table) {
+  for (int i = 0; i < table->_bucket_count; i++) {
+    _u_hash_table_free_bucket(*(table->buckets + i));
+  }
+  free(table->buckets);
+  free(table);
+}
+
+void *_u_hash_table_put(u_hash_table_t *table, char *key) {
+
+}
+
+void *_u_hash_table_get(u_hash_table_t *table, char *key) {
+
+}
+
+void u_hash_table_remove(u_hash_table_t *table, char *key) {
+
+}
+
+int u_hash_table_count(u_hash_table_t *table) {
+  return table->count;
+}
